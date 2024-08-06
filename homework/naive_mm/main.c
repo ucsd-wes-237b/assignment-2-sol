@@ -13,6 +13,26 @@
 void NaiveMatrixMultiply(Matrix *input0, Matrix *input1, Matrix *result)
 {
     //@@ Insert code to implement naive matrix multiply here
+    int rows, cols, ops;
+
+    rows = result->shape[0];
+    cols = result->shape[1];
+    ops = input0->shape[1];
+
+    float sum = 0;
+    for (int r = 0; r < rows; r++)
+    {
+        for (int c = 0; c < cols; c++)
+        {
+            sum = 0;
+            for (int i = 0; i < ops; i++)
+            {
+                sum += input0->data[ops * r + i] * input1->data[cols * i + c];
+            }
+
+            result->data[cols * r + c] = sum;
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -45,6 +65,8 @@ int main(int argc, char *argv[])
     int rows, cols;
     //@@ Update these values for the output rows and cols of the output
     //@@ Do not use the results from the answer matrix
+    rows = host_a.shape[0];
+    cols = host_b.shape[1];
 
     // Allocate the memory for the target.
     host_c.shape[0] = rows;
@@ -58,7 +80,8 @@ int main(int argc, char *argv[])
     // PrintMatrix(&host_c);
 
     // Check the result of the matrix multiply
-    CheckMatrix(&answer, &host_c);
+    err = CheckMatrix(&answer, &host_c);
+    CHECK_ERR(err, "CheckMatrix");
 
     // Save the matrix
     SaveMatrix(input_file_d, &host_c);
