@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     // Allocate the memory for the target.
     host_c.shape[0] = rows;
     host_c.shape[1] = cols;
-    host_c.data = (float *)malloc(sizeof(float) * host_c.shape[0] * host_c.shape[1]);
+    host_c.data = (float *)calloc(sizeof(float), host_c.shape[0] * host_c.shape[1]);
 
     // Call your matrix multiply.
     BlockMatrixMultiply(&host_a, &host_b, &host_c);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <arm_neon.h>
 
 #include "matrix.h"
 
@@ -42,11 +43,18 @@ void BlockMatrixMultiply(Matrix *input0, Matrix *input1, Matrix *result)
 
                             if (k + (BLOCK_SIZE - 1) < ops)
                             {
-                                // Do all operations
-                                result->data[cols * r + c] += input0->data[ops * r + k + 0] * input1->data[cols * (k + 0) + c];
-                                result->data[cols * r + c] += input0->data[ops * r + k + 1] * input1->data[cols * (k + 1) + c];
-                                result->data[cols * r + c] += input0->data[ops * r + k + 2] * input1->data[cols * (k + 2) + c];
-                                result->data[cols * r + c] += input0->data[ops * r + k + 3] * input1->data[cols * (k + 3) + c];
+                                float data1[BLOCK_SIZE];
+
+                                data1[0] = input1->data[cols * (k + 0) + c];
+                                data1[1] = input1->data[cols * (k + 1) + c];
+                                data1[2] = input1->data[cols * (k + 2) + c];
+                                data1[3] = input1->data[cols * (k + 3) + c];
+
+                                float32x4_t vector0 = vld1q_f32(&input0->data[ops * r + k]);
+                                float32x4_t vector1 = vld1q_f32(data1);
+
+                                float32x4_t result_vector = vmulq_f32(vector0, vector1);
+                                result->data[cols * r + c] += vaddvq_f32(result_vector);
                             }
                             else
                             {
