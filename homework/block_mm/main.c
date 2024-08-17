@@ -32,13 +32,13 @@ void BlockMatrixMultiply(Matrix *input0, Matrix *input1, Matrix *result)
         {
             for (int kk = 0; kk < ops_blocks + 1; kk++)
             {
-                for (int r = rr * row_blocks; r < (rr + 1) * row_blocks; r++)
+                for (int r = rr * BLOCK_SIZE; r < (rr + 1) * BLOCK_SIZE; r++)
                 {
-                    for (int c = cc * col_blocks; c < (cc + 1) * col_blocks; c++)
+                    for (int c = cc * BLOCK_SIZE; c < (cc + 1) * BLOCK_SIZE; c++)
                     {
                         if (r < rows && c < cols)
                         {
-                            for (int k = kk * ops_blocks; k < (kk + 1) * ops_blocks; k++)
+                            for (int k = kk * BLOCK_SIZE; k < (kk + 1) * BLOCK_SIZE; k++)
                             {
                                 if (k < ops)
                                 {
